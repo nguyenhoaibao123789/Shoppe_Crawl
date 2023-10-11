@@ -1,9 +1,12 @@
 {
   "type": "object",
   "properties": {
-    "ProfileJson": {
-      "title": "JSON-encoded profile to import",
-      "description": "Obtain the JSON encoded profile from Export -> Export JSON",
+    "ua": {
+      "title": "Custom User-Agent String",
+      "type": "string"
+    },
+    "json": {
+      "title": "JSON String of all Preferences",
       "type": "string"
     }
   }

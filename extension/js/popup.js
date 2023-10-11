@@ -1,7 +1,0 @@
-import { s as sc, f as cc, R as Rm, h as Oa, o as oc, aT as ei, a2 as ri, l as ac, a3 as Ka, p as ha, t as qi, x as Gi, z as ic, a7 as Xa, bY as fv, ak as Qa } from '../profile-hook-58c2ff11.js';
-import { j as jD } from '../App-4876f061.js';
-import '../commonjsHelpers-c9e3b764.js';
-
-function u(t){let n;return {c(){n=Qa("style"),n.textContent="body {\n      height: 510px;\n      /** Fix FF popup disappearance on long window. */\n      width: 620px !important;\n    }\n\n    :root {\n      --drawer-width: 36px;\n      --app-content-width: calc(100% - 36px);\n      --top-bar-width: calc(100% - 35px);\n      --top-bar-height: 48px;\n    }";},m(t,a){Ka(t,n,a);},d(t){t&&Xa(n);}}}function b(t){let n;return {c(){n=Qa("style"),n.textContent="body {\n      height: 100vh;\n      width: 100% !important;\n    }\n    :root {\n      --drawer-width: 36px;\n      --app-content-width: calc(100% - 36px);\n      --top-bar-width: calc(100% - 35px);\n      --top-bar-height: 48px;\n    }";},m(t,a){Ka(t,n,a);},d(t){t&&Xa(n);}}}function g(t){let n,a,x,w;n=new jD({});let g=(fv?b:u)();return {c(){oc(n.$$.fragment),a=ei(),g.c(),x=ri();},m(t,e){ac(n,t,e),Ka(t,a,e),g.m(t,e),Ka(t,x,e),w=!0;},p:ha,i(t){w||(qi(n.$$.fragment,t),w=!0);},o(t){Gi(n.$$.fragment,t),w=!1;},d(t){ic(n,t),t&&Xa(a),g.d(t),t&&Xa(x);}}}Rm();const $=new class extends sc{constructor(t){super(),cc(this,t,null,g,Oa,{});}}({target:document.body});
-
-export { $ as default };

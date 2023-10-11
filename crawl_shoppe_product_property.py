@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from seleniumbase import Driver
+from fake_headers import Headers
 import pandas as pd
 from time import sleep
 from zoneinfo import ZoneInfo
@@ -16,7 +17,7 @@ def init_driver():
         Return:
             driver(selenium object): Driver for crawling purpose
     """
-    driver = Driver(uc=True,incognito=True,chromium_arg='disable-blink-features="AutomationControlled"',extension_dir="extension")
+    driver = Driver(uc=True,incognito=True,chromium_arg='disable-blink-features="AutomationControlled"',extension_dir="extension",undetected=True,undetectable=True,use_auto_ext=False)
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     driver.maximize_window()
     return driver
@@ -37,7 +38,7 @@ def crawl_shoppe_product(driver,start_index,product_link_list):
         print("number of product: {}/{}".format(count,len(product_link_list)))
         try:
             driver.get(product_link)
-            sleep(random.randint(4, 6))
+            sleep(random.randint(4, 9))
         except:
             count=count+1
             continue
@@ -90,23 +91,23 @@ def crawl_shoppe_product(driver,start_index,product_link_list):
             print("Unable to extract information")
         else:
             product_property.append([product_name,product_link,product_rating,product_price,product_sold,crawl_timestamp])
-            print("Product property added")
+            #print("Product property added")
         count=count+1
         random_choice=random.randint(0,1)
         if random_choice!=0:
             try:
-                WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='UJO7PA']"))).click()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='UJO7PA']"))).click()
             except:
                 print("cant click product image")
         if detected_count==3:
             print("Last product link processed successfully: ",count-3)
             print("Unable to extract information 3 times, proceed to stop crawling")
             print("Exporting data to csv")
-            pd.DataFrame(product_property,columns=["Product_name","Product_link","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Product_property/shoppe_product_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
+            pd.DataFrame(product_property,columns=["Product_name","Product_link","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Product_property/shoppe_product_final_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
             print("Done")
             break
-        sleep(random.randint(3, 5))
-    pd.DataFrame(product_property,columns=["Product_name","Product_link","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Product_property/shoppe_product_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
+        sleep(random.randint(3, 7))
+    pd.DataFrame(product_property,columns=["Product_name","Product_link","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Product_property/shoppe_product_final_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
     print("Complete crawling data from product links")
 
 def reduce_df_by_category(df,category_column,number_of_row_per_category):
@@ -141,5 +142,5 @@ if __name__=='__main__':
     print(df_reduced.groupby(["category_name"]).count())
 
     driver=init_driver()
-    crawl_shoppe_product(driver,4667,list(df_reduced["product_link"]))
+    crawl_shoppe_product(driver,641,list(df_reduced["product_link"]))
 
