@@ -7,7 +7,7 @@ from fake_headers import Headers
 import pandas as pd
 from time import sleep
 from zoneinfo import ZoneInfo
-import datetime
+import time
 import random
 
 def init_driver():
@@ -40,52 +40,50 @@ def crawl_shoppe_product(driver,start_index,product_link_list):
             driver.get(product_link)
             sleep(random.randint(4, 9))
         except:
-            count=count+1
-            continue
+            pass
         #Get current timestamp when the product property is crawled
-        crawl_timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Ho_Chi_Minh"))
+        crawl_timestamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
         try:
             #If product name contain "Yêu Thích+" or "Yêu Thích", remove them
             product_name=driver.find_element(By.XPATH, '//div[@class="_44qnta"]').text
             if "Yêu Thích\n" in product_name or "Yêu Thích+\n" in product_name:
                 product_name=product_name.replace("Yêu Thích\n","").replace("Yêu Thích+\n","")
         except:
+            print('failed to retrieve product name')
+            print(product_link)
             product_name=''
         try:
-            product_price=driver.find_element(By.XPATH, '//div[@class="Y3DvsN"]').text
+            try:
+                product_price=driver.find_element(By.XPATH, '//div[@class="Y3DvsN"]').text
             ##Uncomment the block below to not crawl product price with a splash
             # if "-" in product_price:
             #     print("Pass this product due to price has a range instead of one fixed price")
             #     count=count+1
             #     continue
-            # else:
-                # product_price=int(product_price.replace("₫","").replace(".",""))
-        # except NoSuchElementException:
-        #     try:
-        #         product_price=driver.find_element(By.XPATH, '//div[@class="pqTWkA"]').text
+            except NoSuchElementException:
+                product_price=driver.find_element(By.XPATH, '//div[@class="pqTWkA"]').text
         #         if "-" in product_price:
         #             print("Pass this product due to price has a range instead of one fixed price")
         #             count=count+1
         #             continue
-        #         else:
-        #             product_price=int(product_price.replace("₫","").replace(".",""))
         except:
+            print('failed to retrieve product price')
+            print(product_link)
             product_price=''
         try:
             product_rating=float(driver.find_element(By.XPATH, '//div[@class="_1k47d8 _046PXf"]').text)
         except:
+            print('failed to retrieve product rating')
+            print(product_link)
             product_rating=''
         try:
             product_sold=driver.find_element(By.XPATH, '//div[@class="e9sAa2"]').text
             if "k" in product_sold:
                 product_sold=int(float(product_sold.replace("k","").replace(",","."))) *1000
         except:
+            print('failed to retrieve product sold')
+            print(product_link)
             product_sold=''
-        # try:
-        #     product_property.append([product_name,product_link,product_rating,product_price,product_sold,crawl_timestamp])
-        # except:
-        #     count=count+1
-        #     continue
         if product_name == '' and product_price == '' and product_rating =='' and product_sold=='':
             detected_count=detected_count+1
             print("Unable to extract information")
@@ -103,12 +101,13 @@ def crawl_shoppe_product(driver,start_index,product_link_list):
             print("Last product link processed successfully: ",count-3)
             print("Unable to extract information 3 times, proceed to stop crawling")
             print("Exporting data to csv")
-            pd.DataFrame(product_property,columns=["Product_name","Product_link","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Product_property/shoppe_product_final_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
+            pd.DataFrame(product_property,columns=["product_name","product_url","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Raw_product_data/shoppe_product_final_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
             print("Done")
             break
         sleep(random.randint(3, 7))
-    pd.DataFrame(product_property,columns=["Product_name","Product_link","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Product_property/shoppe_product_final_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
+    pd.DataFrame(product_property,columns=["product_name","product_url","product_rating","product_price","product_sold","crawl_timestamp"]).to_csv("Data/Raw_product_data/shoppe_product_final_{}_{}.csv".format(start_index,count-3),index=False,encoding="utf-16")
     print("Complete crawling data from product links")
+    return count-2
 
 def reduce_df_by_category(df,category_column,number_of_row_per_category):
     """
@@ -134,13 +133,18 @@ def reduce_df_by_category(df,category_column,number_of_row_per_category):
 if __name__=='__main__':
     #get all the product link from csv file generated by crawl_shoppe_product_link.py
     df=pd.read_csv("Data/all_product_link.csv")
-    df_reduced=reduce_df_by_category(df,"category_name",3100)
+    df_reduced=reduce_df_by_category(df,"category_name",3100) #Comment this line if you do not wish to reduce the number of product
 
     print("Number of product per category before reduce: ")
     print(df.groupby(["category_name"]).count())
     print("\nNumber of product per category after reduce: ")
     print(df_reduced.groupby(["category_name"]).count())
 
-    driver=init_driver()
-    crawl_shoppe_product(driver,641,list(df_reduced["product_link"]))
+    start_index=10164
+    while start_index<len(df_reduced):
+        driver=init_driver()
+        start_index=crawl_shoppe_product(driver,start_index,list(df_reduced["product_link"])) #Use df instead of df_reduced if you do not wish to reduce the number of product
+        if start_index>=len(df_reduced):
+            break
+        sleep(10)
 
