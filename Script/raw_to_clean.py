@@ -1,8 +1,5 @@
 import pandas as pd
 import glob
-from numpy import nan
-from datetime import datetime
-import re
 
 def read_all_csv(path):
     all_files=glob.glob(path)
