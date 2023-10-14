@@ -17,10 +17,11 @@ def read_all_csv(path):
     return df
 
 def get_dataframe_info(df):
+    print("----------------------Dataframe info---------------------------------")
     print(df.info())
-    print("number of null value per column: ",df.isnull().sum())
-    print("number of product crawled per minute: ",df.groupby(df['crawl_timestamp'])['product_name'].count())
-    print("average number of product crawled per minute: ",df.groupby(df['crawl_timestamp'])['product_name'].count().mean())
+    print("\nNumber of null value per column:\n",df.isnull().sum())
+    print("\nNumber of product crawled per minute:\n ",df.groupby(df['crawl_timestamp'])['product_name'].count())
+    print("\nAverage number of product crawled per minute: ",round(df.groupby(df['crawl_timestamp'])['product_name'].count().mean(),2))
 
 def handle_product_price(row):
     """
