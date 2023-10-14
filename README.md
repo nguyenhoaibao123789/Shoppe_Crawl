@@ -10,7 +10,8 @@ Output: A csv file with the following attributes:
 | product_name    	| Name of the product                                                         	| None                                                                                                                       	|
 | product_url     	| Link to the product page                                                    	| None                                                                                                                       	|
 | product_rating  	| Rating of the product                                                       	| NaN value in this field means product has no rating                                                                        	|
-| product price   	| Price of the product                                                        	| Some product has price display in a range instead of a number. For these cases, only the minimize value in range are taken 	|
+| product_price   	| Price of the product                                                        	| Some product has price display in a range instead of a number. For these cases, only the minimize value in range are taken 	|
+| product_revenue  	| Product profit                                                        	| Calculate by multiply price and number of product sold 	|
 ## Statistic
 ![Screenshot](Doc/Image/Crawl_rate.png)
 * The project is able to crawl data at a rate of 4-5 product per minute.

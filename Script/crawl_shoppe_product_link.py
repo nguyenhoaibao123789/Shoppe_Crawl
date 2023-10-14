@@ -235,15 +235,19 @@ def get_all_product_link(driver,df_subcategory_with_all_page):
     return df_product_link
 
 if __name__=='__main__':
+    #Initial driver, open Shoppe and scroll to the section where there is a list of catefory
     driver=init_driver('https://shopee.vn')
     scroll_to_category_section(driver)
 
+    #Get the category list
     df_category=get_category(driver)
     df_category.drop_duplicates(inplace=True,ignore_index=True)
     df_category = df_category.loc[df_category["Category_name"] != '']
     
+    #Get the subcategory list
     df_subcategory=get_subcategory(driver,df_category)
     df_subcategory_all_page_link=get_page_link_for_each_subcategory(driver,df_subcategory)
 
+    #Get all product URL and write them to a CSV file
     df_product_link=get_all_product_link(driver,df_subcategory_all_page_link)
     df_product_link.to_csv("Data/all_product_link.csv",index=False)

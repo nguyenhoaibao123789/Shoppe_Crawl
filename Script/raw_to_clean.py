@@ -62,10 +62,18 @@ def handle_product_sold(row):
     return row
 
 if __name__=='__main__':
+    #Read and combine all CSV files in the specified path
     df=read_all_csv("Data/Raw_product_data/*.csv")
+    #Print basic info of the new combined dataframe
     get_dataframe_info(df)
+
+    #Transform value in 2 columns, product_price and product_sold
     df['product_price']=df['product_price'].map(lambda row:handle_product_price(row))
     df['product_sold']=df['product_sold'].map(lambda row: handle_product_sold(row)).astype('int')
+    #Generate new column "product_revenue" by multiply the other 2 columns
     df['product_revenue']=df['product_price']*df['product_sold']
+    
+    #Take necessary columns only
     df_final=df[["product_name","product_url","product_rating","product_price","product_revenue"]]
+    #Write result to CSv file
     df_final.to_csv("Data/Clean_product_data/product.csv",index=False)

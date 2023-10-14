@@ -137,15 +137,21 @@ def reduce_df_by_category(df,category_column,number_of_row_per_category):
     return df_reduced
 
 if __name__=='__main__':
+    #get input from terminal
     start_index,is_reduce=terminal_input()
+    #Read raw data
     df=pd.read_csv("Data/all_product_link.csv")
+    #if reduce flag is on
     if is_reduce=="true":
         print("Please specify number of product per category: ")
         reduce_size=int(input())
-        df_final=reduce_df_by_category(df,"category_name",reduce_size)
+        #reduce the number of product per category base on user input
+        df_final=reduce_df_by_category(df,"category_name",reduce_size) 
     else:
+        #if reduce flag is off, then nothing change
         df_final=df
 
+    #if user input a number bigger than the number of products then warn them and end the script
     if start_index>len(df_final):
         print("start index must be less than {}".format(len(df_final)))
     else:
@@ -153,6 +159,7 @@ if __name__=='__main__':
         print(df.groupby(["category_name"]).count())
         print("\nNumber of product per category after reduce: ")
         print(df_final.groupby(["category_name"]).count())
+        #while the index not reach its limit, crawl product data
         while start_index<=len(df_final):
             driver=init_driver()
             start_index=crawl_shoppe_product(driver,start_index,list(df_final["product_link"]))
