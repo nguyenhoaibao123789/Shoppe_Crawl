@@ -84,6 +84,20 @@ For example
 py Script/crawl_shoppe_product_property.py --StartIndex 200 --Reduce True
 ```
 
+Running this script generate a file that name after a pattern ```shoppe_product_final_<start_index>_<end_index>.csv``` inside ```Raw_product_data``` folder
+
+    .
+    ├── Data
+    │   ├── Clean_product_data
+    │   ├── Raw_product_data
+    │   │   ├── shoppe_product_final_<start_index>_<end_index>.csv*
+    │   │   └── shoppe_product_final_<next_start_index>_<next_end_index>.csv*
+    │   └── all_product_link.csv
+    ├── Doc
+    ├── downloaded_files
+    ├── extension
+    └── Script
+
 If ```--Reduce``` or ```-r``` is set to ```true```, a command will appear as seen below, ask you to specify a number:
 
 ![Screenshot](Doc/Image/number_of_product_per_cate.png)
@@ -96,5 +110,16 @@ Also, if you specify the start index bigger than the total number of product, a 
 ```sh
 py Script/raw_to_clean.py
 ```
-Running this command will generate a cleaned CSV file contain all the columns defined in [About the project](#about-the-project)
+Running this command will generate a CSV file ```product.csv``` which combine all the csv files in ```Raw_product_data``` folder and write a cleaned CSV file with columns defined in [About the project](#about-the-project)
+
+    .
+    ├── Data
+    │   ├── Clean_product_data
+    │   │   └── product.csv*
+    │   ├── Raw_product_data
+    │   └── all_product_link.csv
+    ├── Doc
+    ├── downloaded_files
+    ├── extension
+    └── Script
 

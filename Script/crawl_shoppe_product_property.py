@@ -10,6 +10,13 @@ import random
 import argparse
 
 def terminal_input():
+    """
+    Input parameter from command line
+
+        Return:
+            start_index(int): The row in the all_product_link.csv that the function start crawling
+            is_reduce(string): whether to reduce the number of product per category
+    """
     parser = argparse.ArgumentParser()
     # Adding optional argument
     parser.add_argument("-s", "--StartIndex",type=int)
@@ -148,7 +155,7 @@ if __name__=='__main__':
         print(df_final.groupby(["category_name"]).count())
         while start_index<=len(df_final):
             driver=init_driver()
-            start_index=crawl_shoppe_product(driver,start_index,list(df_final["product_link"])) #Use df instead of df_reduced if you do not wish to reduce the number of product
+            start_index=crawl_shoppe_product(driver,start_index,list(df_final["product_link"]))
             if start_index>=len(df_final):
                 break
             sleep(10)

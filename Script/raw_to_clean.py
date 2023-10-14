@@ -2,6 +2,14 @@ import pandas as pd
 import glob
 
 def read_all_csv(path):
+    """
+    Read all CSV files in the specified path
+
+        Parameter:
+            path(string): Path to folder contain CSV files
+        Return:
+            df(dataframe): A dataframe made of several CSV files
+    """
     all_files=glob.glob(path)
     list_df=[]
     for file in all_files:
@@ -14,6 +22,9 @@ def read_all_csv(path):
     return df
 
 def get_dataframe_info(df):
+    """
+    Print the Dataframe basic information
+    """
     print("----------------------Dataframe info---------------------------------")
     print(df.info())
     print("\nNumber of null value per column:\n",df.isnull().sum())
@@ -36,6 +47,13 @@ def handle_product_price(row):
     return row
 
 def handle_product_sold(row):
+    """
+    Handle product sold number, if sold number contain "tr" then remove it and multiply by a milion
+        Parameter:
+            row(str): Dataframe row
+        Return
+            row(str): Dataframe row
+    """
     try:
         if "tr" in row:
             row=int(float(row.replace("tr","").replace(",","."))*1000000)
